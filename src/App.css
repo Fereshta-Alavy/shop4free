@@ -1,4 +1,27 @@
 .App {
   text-align: center;
 }
+.choose-file{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px
+}
+
+.upload{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px
+}
+
+.imgHoder{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px
+}
 
