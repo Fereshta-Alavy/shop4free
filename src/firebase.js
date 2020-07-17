@@ -1,5 +1,6 @@
 import * as firebase from "firebase";
 import "firebase/storage";
+
 var firebaseConfig = {
   apiKey: "AIzaSyAiE3VmRK--LfGxtNz8u8PuMFMD6tBH8sw",
   authDomain: "donate4free.firebaseapp.com",
@@ -13,6 +14,7 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-const storage = firebase.storage().ref();
+const storage = firebase.storage();
+// const db = firebase.firestore();
 
 export { storage, firebase as default };
