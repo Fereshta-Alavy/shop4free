@@ -1,14 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { red } from "color-name";
-import { storage } from "../firebase";
+import { db, storage } from "../firebase";
 
 function ImgUpload() {
   const [img, setSelectedFile] = useState(null);
-  // const [url, setUrl] = useState("");
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
-  const [images, setImages] = useState({});
+  const [images, setImages] = useState([]);
 
+  useEffect(() => {
+    db.collection("ImageInfo")
+      .orderBy("date", "desc")
+      .get()
+      .then(res => {
+        res.forEach(doc => {
+          console.log(doc.data());
+          const oldImg = images;
+          oldImg.push(doc.data().ImageUrl);
+          setImages([...oldImg]);
+        });
+      });
+  }, []);
   const fileSelecterHandler = event => {
     setSelectedFile(event.target.files[0]);
   };
@@ -25,27 +37,18 @@ function ImgUpload() {
           setProgress(progress);
         },
         error => {
-          // error function ....
-          console.log(error);
           setError(error);
         },
         () => {
-          storage
-            .ref("images")
-            .listAll()
-            .then(res => {
-              res.items.forEach(item =>
-                storage
-                  .ref()
-                  .child(item.location.path)
-                  .getDownloadURL()
-                  .then(url => {
-                    const oldImages = images;
-                    oldImages[url] = null;
-                    setImages({ ...oldImages });
-                  })
-              );
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            db.collection("ImageInfo").add({
+              ImageUrl: downloadURL,
+              date: new Date()
             });
+            const oldImages = images;
+            oldImages.unshift(downloadURL);
+            setImages([...oldImages]);
+          });
         }
       );
     } else {
@@ -65,7 +68,7 @@ function ImgUpload() {
           Upload
         </button>
         <br />
-        {Object.keys(images).map(url => {
+        {images.map(url => {
           return <img src={url} height="300" width="300" />;
         })}
       </div>
