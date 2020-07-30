@@ -1,25 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { red } from "color-name";
 import { db, storage } from "../firebase";
 
-function ImgUpload() {
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Radio from "@material-ui/core/Radio";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+
+function ImgUpload({ images, setImages, setFlag, publicPlaces }) {
   const [img, setSelectedFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
-  const [images, setImages] = useState([]);
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    db.collection("ImageInfo")
-      .orderBy("date", "desc")
-      .get()
-      .then(res => {
-        res.forEach(doc => {
-          const oldImg = images;
-          oldImg.push(doc.data().ImageUrl);
-          setImages([...oldImg]);
-        });
-      });
-  }, []);
+  console.log(publicPlaces);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setFlag(false);
+  };
+
   const fileSelecterHandler = event => {
     setSelectedFile(event.target.files[0]);
   };
@@ -50,6 +58,7 @@ function ImgUpload() {
           });
         }
       );
+      setFlag(false);
     } else {
       setError("Please choose an image to upload");
     }
@@ -57,25 +66,30 @@ function ImgUpload() {
 
   return (
     <div>
-      <div>
-        <input
-          className="choose-file"
-          type="file"
-          onChange={fileSelecterHandler}
-        />
-        <button className="upload" onClick={fileUploadHandler}>
-          Upload
-        </button>
-        <br />
-        {images.map(url => {
-          return <img src={url} height="300" width="300" />;
-        })}
-      </div>
+      <Dialog open={handleClickOpen} onClose={handleClose}>
+        <DialogTitle id="form-dialog-title">Upload An Item</DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText>
+            upload an Image an choose the nearby place
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <input
+            className="choose-file"
+            type="file"
+            onChange={fileSelecterHandler}
+          />
+          <Button onClick={fileUploadHandler} color="primary">
+            Upload
+          </Button>
 
-      <div>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
         <p style={{ color: "red" }}>{error}</p>
-        {progress > 0 ? <progress value={progress} max="100" /> : ""}
-      </div>
+      </Dialog>
+      {progress > 0 ? <progress value={progress} max="100" /> : ""}
     </div>
   );
 }
