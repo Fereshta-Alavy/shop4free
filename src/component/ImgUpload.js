@@ -14,7 +14,6 @@ function ImgUpload() {
       .get()
       .then(res => {
         res.forEach(doc => {
-          console.log(doc.data());
           const oldImg = images;
           oldImg.push(doc.data().ImageUrl);
           setImages([...oldImg]);
