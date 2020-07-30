@@ -6,6 +6,7 @@ function GetLocation() {
   const [latitude, setlatitude] = useState(null);
   const [longitude, setlongitude] = useState(null);
   const [userAddress, setUserAddress] = useState(null);
+  const [publicPlaces, setPublicPlaces] = useState([]);
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(getCoordinates, getLocationError);
@@ -22,25 +23,39 @@ function GetLocation() {
     const lat = latitude;
     const lon = longitude;
     const output = "json";
-    const radius = 2000;
+    const type = "store";
+    const radius = 5000;
     const key = GOOGLE_API_KEY;
-    const parameters =
-      "radius=" + radius + "&location=" + lat + "," + lon + "&key=" + key;
+    const param =
+      "radius=" +
+      radius +
+      "&location=" +
+      lat +
+      "," +
+      lon +
+      "&key=" +
+      key +
+      "&type=" +
+      type;
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
     const url =
       "https://maps.googleapis.com/maps/api/place/nearbysearch/" +
       output +
       "?" +
-      parameters;
+      param;
+    console.log(url);
     fetch(proxyurl + url)
       .then(response => response.json())
       .then(json => {
         console.log(json);
         const results = json.results;
         for (let i = 0; i < results.length; i++) {
-          console.log(results[i].place_id + " - " + results[i].name);
+          const oldPlaces = publicPlaces;
+          oldPlaces.push(results[i].place_id + " - " + results[i].name);
+          setPublicPlaces([...oldPlaces]);
         }
       });
+    console.log(publicPlaces);
   }
   return (
     <div>
