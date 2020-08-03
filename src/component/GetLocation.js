@@ -38,7 +38,6 @@ export async function getLocation() {
 
 export function getNearbyPlaces(latitude, longitude) {
   return new Promise((resolve, reject) => {
-    console.log(latitude, longitude);
     const nearbyPlaces = [];
     const lat = latitude;
     const lon = longitude;

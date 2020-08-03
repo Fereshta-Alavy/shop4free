@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { red } from "color-name";
+import PickUpPlace from "./PickUpPlace";
 import { db, storage } from "../firebase";
 
 import Button from "@material-ui/core/Button";
@@ -9,17 +10,16 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import DropDownMenu from "material-ui/DropDownMenu";
+import MenuItem from "@material-ui/core/MenuItem";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
-function ImgUpload({ images, setImages, setFlag, publicPlaces }) {
+function ImgUpload({ images, setImages, setFlag }) {
   const [img, setSelectedFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
 
-  console.log(publicPlaces);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -74,11 +74,15 @@ function ImgUpload({ images, setImages, setFlag, publicPlaces }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <input
-            className="choose-file"
-            type="file"
-            onChange={fileSelecterHandler}
-          />
+          <div>
+            <input
+              className="choose-file"
+              type="file"
+              onChange={fileSelecterHandler}
+            />
+            <PickUpPlace />
+          </div>
+
           <Button onClick={fileUploadHandler} color="primary">
             Upload
           </Button>
@@ -86,9 +90,18 @@ function ImgUpload({ images, setImages, setFlag, publicPlaces }) {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
+
+          {/* <MuiThemeProvider>
+            <DropDownMenu onChange={handlePlaceChange}>
+              {publicPlaces.map((place, index) => (
+                <MenuItem primaryText={place} />
+              ))}
+            </DropDownMenu>
+          </MuiThemeProvider> */}
         </DialogActions>
         <p style={{ color: "red" }}>{error}</p>
       </Dialog>
+
       {progress > 0 ? <progress value={progress} max="100" /> : ""}
     </div>
   );

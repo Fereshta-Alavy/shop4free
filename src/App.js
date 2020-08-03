@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import ImgUpload from "./component/ImgUpload";
-import { getLocation, getNearbyPlaces } from "./component/GetLocation";
+
+// import { getLocation, getNearbyPlaces } from "./component/GetLocation";
 import { db } from "./firebase";
 
 function App() {
   const [images, setImages] = useState([]);
   const [flag, setFlag] = useState(false);
-  const [publicPlaces, setPublicPlaces] = useState([]);
+  // const [publicPlaces, setPublicPlaces] = useState([]);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  useEffect(() => {
-    getLocation().then(position => {
-      setLatitude(position.coords.latitude);
-      setLongitude(position.coords.longitude);
-    });
 
+  useEffect(() => {
     db.collection("ImageInfo")
       .orderBy("date", "desc")
       .get()
@@ -32,21 +29,24 @@ function App() {
     setFlag(true);
   }
 
-  if (latitude) {
-    getNearbyPlaces(latitude, longitude).then(places => console.log(places));
-  }
+  // if (latitude) {
+  //   getNearbyPlaces(latitude, longitude).then(places =>
+  //     setPublicPlaces(places)
+  //   );
+  // }
 
   return (
     <div className="App">
       <div>
         <button onClick={showPopUpHandler}>Upload Image</button>
       </div>
+
       {flag ? (
         <ImgUpload
           images={images}
           setImages={setImages}
           setFlag={setFlag}
-          publicPlaces={publicPlaces}
+          // publicPlaces={publicPlaces}
         />
       ) : null}
 

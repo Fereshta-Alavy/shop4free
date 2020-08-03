@@ -12,8 +12,11 @@
     "cors": "^2.8.5",
     "firebase": "^7.16.0",
     "google-maps-react": "^2.0.6",
+    "material-ui": "^0.20.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-dropdown": "^1.7.0",
+    "react-places-autocomplete": "^7.3.0",
     "react-scripts": "3.4.1"
   },
   "scripts": {
