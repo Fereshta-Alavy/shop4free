@@ -1,24 +1,25 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { red } from "color-name";
+import React, { useState } from "react";
 import PickUpPlace from "./PickUpPlace";
 import { db, storage } from "../firebase";
+import { GOOGLE_API_KEY } from "../config";
 
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "@material-ui/core/MenuItem";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 function ImgUpload({ images, setImages, setFlag }) {
   const [img, setSelectedFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+  const [coordinates, setCoordinates] = useState({
+    lat: null,
+    lng: null
+  });
+  const [address, setAddress] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -50,10 +51,16 @@ function ImgUpload({ images, setImages, setFlag }) {
           uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
             db.collection("ImageInfo").add({
               ImageUrl: downloadURL,
-              date: new Date()
+              date: new Date(),
+              coord: coordinates,
+              address: address
             });
+
             const oldImages = images;
-            oldImages.unshift(downloadURL);
+            const imgObj = {};
+            imgObj.url = downloadURL;
+            imgObj.address = address;
+            oldImages.unshift(imgObj);
             setImages([...oldImages]);
           });
         }
@@ -68,11 +75,11 @@ function ImgUpload({ images, setImages, setFlag }) {
     <div>
       <Dialog open={handleClickOpen} onClose={handleClose}>
         <DialogTitle id="form-dialog-title">Upload An Item</DialogTitle>
-        <DialogContent dividers>
+        {/* <DialogContent dividers>
           <DialogContentText>
             upload an Image an choose the nearby place
           </DialogContentText>
-        </DialogContent>
+        </DialogContent> */}
         <DialogActions>
           <div>
             <input
@@ -80,7 +87,11 @@ function ImgUpload({ images, setImages, setFlag }) {
               type="file"
               onChange={fileSelecterHandler}
             />
-            <PickUpPlace />
+            <PickUpPlace
+              setCoordinates={setCoordinates}
+              setAddress={setAddress}
+              address={address}
+            />
           </div>
 
           <Button onClick={fileUploadHandler} color="primary">
@@ -90,14 +101,6 @@ function ImgUpload({ images, setImages, setFlag }) {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-
-          {/* <MuiThemeProvider>
-            <DropDownMenu onChange={handlePlaceChange}>
-              {publicPlaces.map((place, index) => (
-                <MenuItem primaryText={place} />
-              ))}
-            </DropDownMenu>
-          </MuiThemeProvider> */}
         </DialogActions>
         <p style={{ color: "red" }}>{error}</p>
       </Dialog>

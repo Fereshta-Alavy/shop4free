@@ -4,11 +4,13 @@
   padding: 0
 }
 .App {
+  
   text-align: center;
+
 }
 
 .canvas{
-  /* height: 100vh; */
+  
   background-size: cover;
   background-position: center;
 
@@ -22,7 +24,6 @@
    border-radius: 5px;
    color: black;
    font-weight: bold;
-   /* margin-top: 300px; */
    margin-left: 20px
 
 }
@@ -46,6 +47,25 @@
   width: 300px;
 }
 
+.individual-image{
+  width:300px;
+  text-align:center;
+  display:block;
+  background-color: transparent;
+  border: 1px solid transparent;
+  margin-right: 10px;
+  margin-bottom: 1px;
+  float:left;
+}
+.label{
+  font-family: 'Lato', 'sans-serif';
+  background-color: white;
+  align-items: center;
+  color: gray;
+  margin-top: 100px;
+  
+} 
+
 .choose-file{
   display: flex;
   flex-direction: column;
@@ -53,15 +73,11 @@
   justify-content: center;
   margin: 20px
 }
+.material-icons{
+  font-size: 20px;
+  color: darkslategray
+}
 
-/* .upload{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 20px;
- 
-} */
 
 .imgHoder{
   display: flex;

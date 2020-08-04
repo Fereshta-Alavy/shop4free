@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import ImgUpload from "./component/ImgUpload";
-
-// import { getLocation, getNearbyPlaces } from "./component/GetLocation";
+import { GOOGLE_API_KEY } from "./config";
 import { db } from "./firebase";
+// import Geocode from "react-geocode";
+// Geocode.setApiKey(GOOGLE_API_KEY);
 
 function App() {
   const [images, setImages] = useState([]);
   const [flag, setFlag] = useState(false);
-  // const [publicPlaces, setPublicPlaces] = useState([]);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
 
   useEffect(() => {
     db.collection("ImageInfo")
@@ -19,7 +17,11 @@ function App() {
       .then(res => {
         res.forEach(doc => {
           const oldImg = images;
-          oldImg.push(doc.data().ImageUrl);
+          const address = doc.data().address;
+          const imgObj = {};
+          imgObj.url = doc.data().ImageUrl;
+          imgObj.address = address;
+          oldImg.push(imgObj);
           setImages([...oldImg]);
         });
       });
@@ -29,12 +31,6 @@ function App() {
     setFlag(true);
   }
 
-  // if (latitude) {
-  //   getNearbyPlaces(latitude, longitude).then(places =>
-  //     setPublicPlaces(places)
-  //   );
-  // }
-
   return (
     <div className="App">
       <div>
@@ -42,16 +38,17 @@ function App() {
       </div>
 
       {flag ? (
-        <ImgUpload
-          images={images}
-          setImages={setImages}
-          setFlag={setFlag}
-          // publicPlaces={publicPlaces}
-        />
+        <ImgUpload images={images} setImages={setImages} setFlag={setFlag} />
       ) : null}
 
-      {images.map(url => {
-        return <img src={url} height="300" width="300" />;
+      {images.map(obj => {
+        return (
+          <div className="individual-image">
+            <img src={obj.url} height="300" width="300" />
+            <i className="material-icons">location_on</i>
+            <label className="label">{obj.address}</label>
+          </div>
+        );
       })}
     </div>
   );

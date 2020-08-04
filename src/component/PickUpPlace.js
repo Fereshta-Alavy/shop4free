@@ -4,16 +4,17 @@ import PlacesAutocomplete, {
   getLatLng
 } from "react-places-autocomplete";
 
-export default function PickUpPlace() {
-  const [address, setAddress] = useState("");
-  const [coordinates, setCoordinates] = useState({
-    lat: null,
-    lng: null
-  });
+export default function PickUpPlace({ setCoordinates, setAddress, address }) {
+  // const [address, setAddress] = useState("");
+  // const [coordinates, setCoordinates] = useState({
+  //   lat: null,
+  //   lng: null
+  // });
   const handleSelect = async value => {
     const results = await geocodeByAddress(value);
     const latLng = await getLatLng(results[0]);
     setAddress(value);
+    // console.log("address", value);
     setCoordinates(latLng);
   };
 
