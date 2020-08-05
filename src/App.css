@@ -87,3 +87,10 @@
   margin: 20px
 }
 
+.item-preview{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 10vh;
+}
+

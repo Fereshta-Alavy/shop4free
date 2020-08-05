@@ -4,6 +4,7 @@ import { db, storage } from "../firebase";
 import { GOOGLE_API_KEY } from "../config";
 
 import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -12,6 +13,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 function ImgUpload({ images, setImages, setFlag }) {
   const [img, setSelectedFile] = useState(null);
+  const [desc, setSelectedDesc] = useState("");
+
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
@@ -31,6 +34,10 @@ function ImgUpload({ images, setImages, setFlag }) {
 
   const fileSelecterHandler = event => {
     setSelectedFile(event.target.files[0]);
+  };
+
+  const handleDescription = event => {
+    setSelectedDesc(event.target.value);
   };
 
   const fileUploadHandler = () => {
@@ -53,13 +60,15 @@ function ImgUpload({ images, setImages, setFlag }) {
               ImageUrl: downloadURL,
               date: new Date(),
               coord: coordinates,
-              address: address
+              address: address,
+              description: desc
             });
 
             const oldImages = images;
             const imgObj = {};
             imgObj.url = downloadURL;
             imgObj.address = address;
+            imgObj.description = desc;
             oldImages.unshift(imgObj);
             setImages([...oldImages]);
           });
@@ -93,7 +102,12 @@ function ImgUpload({ images, setImages, setFlag }) {
               address={address}
             />
           </div>
-
+          <TextField
+            id="standard-secondary"
+            label="description"
+            color="secondary"
+            onChange={handleDescription}
+          />
           <Button onClick={fileUploadHandler} color="primary">
             Upload
           </Button>
