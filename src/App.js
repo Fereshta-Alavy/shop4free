@@ -1,76 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./App.css";
 import ImgUpload from "./component/ImgUpload";
 import ImageDescPopUp from "./component/ImageDescPopUp";
+import { Router } from "@reach/router";
+import SignIn from "./component/SignIn";
+import SignUp from "./component/SignUp";
+import { Switch, Route, Link } from "react-router-dom";
+
+import PasswordReset from "./component/PasswordReset";
+
+import UserProvider from "./providers/UserProvider";
+import { auth, signInWithGoogle } from "./firebase";
 import { GOOGLE_API_KEY } from "./config";
-import { db } from "./firebase";
+import { firestore } from "./firebase";
+import { UserContext } from "./providers/UserProvider";
+import Application from "./component/Application";
+
+import HomePage from "./HomePage";
 
 function App() {
-  const [images, setImages] = useState([]);
-  const [flag, setFlag] = useState(false);
-  const [imageFlag, setImageFlag] = useState(false);
-  const [image, setImage] = useState("");
-  const [description, setDescription] = useState("");
-
-  useEffect(() => {
-    db.collection("ImageInfo")
-      .get()
-      .then(res => {
-        res.forEach(doc => {
-          const oldImg = images;
-          const imgObj = {};
-          imgObj.url = doc.data().ImageUrl;
-          imgObj.address = doc.data().address;
-          imgObj.description = doc.data().description;
-          oldImg.push(imgObj);
-          setImages([...oldImg]);
-        });
-      });
-  }, []);
-
-  function showPopUpHandler() {
-    setFlag(true);
-  }
-  function handleImageClick(image, desc) {
-    setImageFlag(true);
-    setImage(image);
-
-    setDescription(desc);
-    console.log(desc);
-  }
-
+  const user = useContext(UserContext);
   return (
-    <div className="App">
-      <div>
-        <button onClick={showPopUpHandler}>Upload Image</button>
-      </div>
-
-      {flag ? (
-        <ImgUpload images={images} setImages={setImages} setFlag={setFlag} />
-      ) : null}
-
-      {images.map(obj => {
-        return (
-          <div className="individual-image">
-            <img
-              src={obj.url}
-              height="300"
-              width="300"
-              onClick={() => handleImageClick(obj.url, obj.description)}
-            />
-            <i className="material-icons">location_on</i>
-            <label className="label">{obj.address}</label>
-            {/* <button onClick={setImage(obj.url)}>select</button> */}
-          </div>
-        );
-      })}
-      {imageFlag ? (
-        <ImageDescPopUp
-          image={image}
-          description={description}
-          setImageFlag={setImageFlag}
-        />
-      ) : null}
+    <div>
+      <Switch>
+        <Route exact path="/">
+          <HomePage />
+        </Route>
+        <Route exact path="/upload">
+          {user ? <ImgUpload /> : <SignIn />}
+        </Route>
+        <Route exact path="/singIn">
+          <SignIn />
+        </Route>
+        <Route exact path="/signUp">
+          <SignUp />
+        </Route>
+        <Route exact path="/passwordReset">
+          <PasswordReset />
+        </Route>
+      </Switch>
     </div>
   );
 }
