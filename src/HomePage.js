@@ -1,26 +1,25 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./App.css";
 import ImgUpload from "./component/ImgUpload";
+import Button from "@material-ui/core/Button";
 import ImageDescPopUp from "./component/ImageDescPopUp";
 import { useHistory } from "react-router-dom";
-import { Router } from "@reach/router";
-import SignIn from "./component/SignIn";
-import SignUp from "./component/SignUp";
-
-import PasswordReset from "./component/PasswordReset";
-
-import UserProvider from "./providers/UserProvider";
 import { auth } from "./firebase";
-import { GOOGLE_API_KEY } from "./config";
 import { firestore } from "./firebase";
+import { makeStyles } from "@material-ui/core/styles";
 
-import Application from "./component/Application";
+const useStyles = makeStyles(theme => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(1)
+    }
+  }
+}));
 
 function HomePage() {
+  const classes = useStyles();
   const [images, setImages] = useState([]);
-  const [flag, setFlag] = useState(false);
   const [imageFlag, setImageFlag] = useState(false);
-  const [signUpFlag, setSignUpFlag] = useState(false);
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const history = useHistory();
@@ -57,14 +56,20 @@ function HomePage() {
   }
 
   return (
-    <div className="App">
-      <div>
-        <button onClick={showPopUpHandler}>Upload Image</button>
-      </div>
+    <div className="App" className={classes.root}>
+      <Button variant="contained" color="primary" onClick={showPopUpHandler}>
+        Upload Image
+      </Button>
 
-      {flag ? (
-        <ImgUpload images={images} setImages={setImages} setFlag={setFlag} />
-      ) : null}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          auth.signOut();
+        }}
+      >
+        Sign out
+      </Button>
 
       {images.map(obj => {
         return (
@@ -77,7 +82,6 @@ function HomePage() {
             />
             <i className="material-icons">location_on</i>
             <label className="label">{obj.address}</label>
-            {/* <button onClick={setImage(obj.url)}>select</button> */}
           </div>
         );
       })}
@@ -88,17 +92,6 @@ function HomePage() {
           setImageFlag={setImageFlag}
         />
       ) : null}
-
-      {signUpFlag ? <Application setSignUpFlag={setSignUpFlag} /> : null}
-
-      <button
-        className="w-full py-3 bg-red-600 mt-4 text-white"
-        onClick={() => {
-          auth.signOut();
-        }}
-      >
-        Sign out
-      </button>
     </div>
   );
 }

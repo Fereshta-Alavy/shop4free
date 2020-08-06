@@ -1,13 +1,8 @@
 import React, { useState, useContext } from "react";
 import PickUpPlace from "./PickUpPlace";
-import firebase, {
-  firestore,
-  storage,
-  generateUserDocument
-} from "../firebase";
+import firebase, { firestore, storage } from "../firebase";
 
 import { useHistory } from "react-router-dom";
-import { GOOGLE_API_KEY } from "../config";
 import { UserContext } from "../providers/UserProvider";
 
 import Button from "@material-ui/core/Button";
@@ -15,7 +10,6 @@ import TextField from "@material-ui/core/TextField";
 
 function ImgUpload() {
   const user = useContext(UserContext);
-  console.log(user);
   const history = useHistory();
 
   const [img, setSelectedFile] = useState(null);
@@ -23,7 +17,7 @@ function ImgUpload() {
 
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
-  const [open, setOpen] = useState(false);
+
   const [coordinates, setCoordinates] = useState({
     lat: null,
     lng: null
